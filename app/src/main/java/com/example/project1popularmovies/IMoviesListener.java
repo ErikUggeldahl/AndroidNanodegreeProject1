@@ -1,4 +1,4 @@
-package example.com.project1popularmovies;
+package com.example.project1popularmovies;
 
 public interface IMoviesListener {
     void receiveMovies(Movie[] movies);

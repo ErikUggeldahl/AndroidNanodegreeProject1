@@ -1,4 +1,4 @@
-package example.com.project1popularmovies;
+package com.example.project1popularmovies;
 
 import android.content.Context;
 import android.view.View;

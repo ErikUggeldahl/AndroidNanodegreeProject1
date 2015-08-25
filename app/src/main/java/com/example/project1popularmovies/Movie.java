@@ -1,4 +1,4 @@
-package example.com.project1popularmovies;
+package com.example.project1popularmovies;
 
 import android.net.Uri;
 import android.util.Log;
