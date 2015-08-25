@@ -17,6 +17,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FetchPopularMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
@@ -45,6 +46,7 @@ public class FetchPopularMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
         try {
             String apiKey = params[0];
+            String sortBy = params[1];
 
             Uri.Builder uriBuilder = new Uri.Builder();
             uriBuilder.scheme("http")
@@ -52,7 +54,8 @@ public class FetchPopularMoviesTask extends AsyncTask<String, Void, Movie[]> {
                     .appendPath("3")
                     .appendPath("discover")
                     .appendPath("movie")
-                    .appendQueryParameter("sort_by", "popularity.desc")
+                    .appendQueryParameter("sort_by", sortBy)
+                    .appendQueryParameter("vote_count.gte", "10")
                     .appendQueryParameter("api_key", apiKey);
 
             URL url = new URL(uriBuilder.toString());
@@ -119,10 +122,13 @@ public class FetchPopularMoviesTask extends AsyncTask<String, Void, Movie[]> {
         for (int i = 0; i < popularMoviesArr.length(); i++) {
             JSONObject movie = popularMoviesArr.getJSONObject(i);
 
+            String releaseDateString = movie.getString("release_date");
+            Date releaseDate = releaseDateString != null ? dateFormatter.parse(releaseDateString) : null;
+
             movies[i] = new Movie(
                     movie.getString("original_title"),
                     movie.getString("overview"),
-                    dateFormatter.parse(movie.getString("release_date")),
+                    releaseDate,
                     (int) (movie.getDouble("vote_average") * 10),
                     movie.getString("poster_path"));
         }

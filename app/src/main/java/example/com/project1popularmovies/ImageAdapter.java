@@ -27,6 +27,11 @@ public class ImageAdapter extends BaseAdapter {
         mImageUrls.addAll(urls);
     }
 
+    public void clear()
+    {
+        mImageUrls.clear();
+    }
+
     @Override
     public int getCount() {
         return mImageUrls.size();

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="sort_popularity_label">Most Popular</string>
+    <string name="sort_score_label">Highest Rated</string>
+
     <string-array name="popular_movies_sort_options">
-        <item>Most Popular</item>
-        <item>Highest Rated</item>
+        <item>@string/sort_popularity_label</item>
+        <item>@string/sort_score_label</item>
     </string-array>
 
 </resources>

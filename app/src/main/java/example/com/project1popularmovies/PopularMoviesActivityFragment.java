@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class PopularMoviesActivityFragment extends Fragment implements IMoviesListener {
 
-    private ImageAdapter adapter;
+    private ImageAdapter mImageGridAdapter;
 
     public PopularMoviesActivityFragment() {
     }
@@ -24,15 +25,24 @@ public class PopularMoviesActivityFragment extends Fragment implements IMoviesLi
 
         View rootView = inflater.inflate(R.layout.fragment_popular_movies, container, false);
 
-        ((Spinner) rootView.findViewById(R.id.spinner_sort_order))
-                .setAdapter(createSpinnerSortAdapter());
+        Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner_sort_order);
+        ArrayAdapter<CharSequence> spinnerSortAdapter = createSpinnerSortAdapter();
+        spinner.setAdapter(spinnerSortAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sortOrder = parent.getItemAtPosition(position).toString();
+                updateWithSortOrder(sortOrder);
+            }
 
-        adapter = new ImageAdapter(getActivity());
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        mImageGridAdapter = new ImageAdapter(getActivity());
         ((GridView) rootView.findViewById(R.id.popular_grid))
-                .setAdapter(adapter);
-
-        String apiKey = getString(R.string.api_key);
-        new FetchPopularMoviesTask(this).execute(apiKey);
+                .setAdapter(mImageGridAdapter);
 
         return rootView;
     }
@@ -49,13 +59,33 @@ public class PopularMoviesActivityFragment extends Fragment implements IMoviesLi
         return adapter;
     }
 
+    private void updateWithSortOrder(String sortOrder) {
+        String sortOrderArg = null;
+
+        if (sortOrder.equals(getString(R.string.sort_popularity_label)))
+            sortOrderArg = getString(R.string.sort_popularity);
+        else if (sortOrder.equals(getString(R.string.sort_score_label)))
+            sortOrderArg = getString(R.string.sort_score);
+        else
+            return;
+
+        mImageGridAdapter.clear();
+        mImageGridAdapter.notifyDataSetChanged();
+
+        String apiKey = getString(R.string.api_key);
+        new FetchPopularMoviesTask(this).execute(apiKey, sortOrderArg);
+    }
+
     @Override
     public void receiveMovies(Movie[] movies) {
-        adapter.AddImageUrls(getMovieUrls(movies));
-        adapter.notifyDataSetChanged();
+        mImageGridAdapter.AddImageUrls(getMovieUrls(movies));
+        mImageGridAdapter.notifyDataSetChanged();
     }
 
     private ArrayList<String> getMovieUrls(Movie[] movies) {
+        if (movies == null)
+            return new ArrayList<>();
+
         ArrayList<String> urls = new ArrayList<>(movies.length);
 
         for (int i = 0; i < movies.length; i++) {
