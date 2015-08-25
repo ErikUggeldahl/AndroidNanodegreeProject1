@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Project1PopularMovies</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Project 1 - Popular Movies</string>
     <string name="action_settings">Settings</string>
 </resources>
