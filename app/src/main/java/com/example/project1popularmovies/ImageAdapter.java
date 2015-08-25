@@ -17,13 +17,13 @@ import java.util.List;
 
 public class ImageAdapter extends BaseAdapter {
     private final Context mContext;
-    private List<String> mImageUrls = new ArrayList<>();
+    private List<Movie> mImageUrls = new ArrayList<>();
 
     public ImageAdapter(Context context) {
         mContext = context;
     }
 
-    public void AddImageUrls(List<String> urls) {
+    public void addMovies(List<Movie> urls) {
         mImageUrls.addAll(urls);
     }
 
@@ -38,7 +38,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     @Override
-    public String getItem(int position) {
+    public Movie getItem(int position) {
         return mImageUrls.get(position);
     }
 
@@ -56,7 +56,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
-        String url = getItem(position);
+        String url = getItem(position).getPosterUrl().toString();
 
         Picasso.with(mContext)
                 .load(url)

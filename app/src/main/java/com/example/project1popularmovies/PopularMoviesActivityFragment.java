@@ -1,6 +1,8 @@
 package com.example.project1popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,8 +43,19 @@ public class PopularMoviesActivityFragment extends Fragment implements IMoviesLi
         });
 
         mImageGridAdapter = new ImageAdapter(getActivity());
-        ((GridView) rootView.findViewById(R.id.popular_grid))
-                .setAdapter(mImageGridAdapter);
+        GridView gridView = (GridView) rootView.findViewById(R.id.popular_grid);
+        gridView.setAdapter(mImageGridAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Parcelable movie = mImageGridAdapter.getItem(position);
+
+                Intent detailIntent = new Intent(getActivity(), DetailsActivity.class)
+                        .putExtra(getString(R.string.intent_extra_movie), movie);
+                startActivity(detailIntent);
+            }
+        });
+
 
         return rootView;
     }
@@ -60,7 +73,7 @@ public class PopularMoviesActivityFragment extends Fragment implements IMoviesLi
     }
 
     private void updateWithSortOrder(String sortOrder) {
-        String sortOrderArg = null;
+        String sortOrderArg;
 
         if (sortOrder.equals(getString(R.string.sort_popularity_label)))
             sortOrderArg = getString(R.string.sort_popularity);
@@ -78,20 +91,12 @@ public class PopularMoviesActivityFragment extends Fragment implements IMoviesLi
 
     @Override
     public void receiveMovies(Movie[] movies) {
-        mImageGridAdapter.AddImageUrls(getMovieUrls(movies));
-        mImageGridAdapter.notifyDataSetChanged();
-    }
-
-    private ArrayList<String> getMovieUrls(Movie[] movies) {
-        if (movies == null)
-            return new ArrayList<>();
-
-        ArrayList<String> urls = new ArrayList<>(movies.length);
-
+        ArrayList<Movie> moviesList = new ArrayList<Movie>(movies.length);
         for (int i = 0; i < movies.length; i++) {
-            urls.add(movies[i].getPosterUrl().toString());
+            moviesList.add(movies[i]);
         }
 
-        return urls;
+        mImageGridAdapter.addMovies(moviesList);
+        mImageGridAdapter.notifyDataSetChanged();
     }
 }

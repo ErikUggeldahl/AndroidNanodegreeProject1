@@ -4,5 +4,6 @@
     <string name="sort_popularity">popularity.desc</string>
     <string name="sort_score">vote_average.desc</string>
     <string name="title_activity_details">DetailsActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="intent_extra_movie">Movie</string>
+    <string name="details_released_label">Released</string>
 </resources>
